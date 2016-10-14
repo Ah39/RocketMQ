@@ -43,6 +43,7 @@ import com.alibaba.rocketmq.remoting.common.RemotingHelper;
 import com.alibaba.rocketmq.remoting.common.RemotingUtil;
 import com.alibaba.rocketmq.remoting.exception.RemotingCommandException;
 import com.alibaba.rocketmq.remoting.netty.NettyRequestProcessor;
+import com.alibaba.rocketmq.remoting.netty.RequestTask;
 import com.alibaba.rocketmq.remoting.protocol.RemotingCommand;
 import com.alibaba.rocketmq.store.GetMessageResult;
 import com.alibaba.rocketmq.store.MessageExtBrokerInner;
@@ -533,8 +534,8 @@ public class PullMessageProcessor implements NettyRequestProcessor {
                 }
             }
         };
-
-        this.brokerController.getPullMessageExecutor().submit(run);
+        RequestTask requestTask = new RequestTask(run, channel, request);
+        this.brokerController.getPullMessageExecutor().submit(requestTask);
     }
 
     public void registerConsumeMessageHook(List<ConsumeMessageHook> sendMessageHookList) {
